@@ -1,0 +1,110 @@
+psql (14.1)
+Type "help" for help.
+
+-- CREATING THE TABLES WITH THE CREATE TABLE QUERY
+
+mr.lidou=# CREATE TABLE videogames(vg_id int primary key, vg_name varchar(30), genre_id int);
+CREATE TABLE
+mr.lidou=# CREATE TABLE genre(vg_id int primary key, genre_name varchar(30)); 
+CREATE TABLE
+mr.lidou=# CREATE TABLE game_publisher(vg_id int ptimary key, publisher_name varchar(30))
+mr.lidou-# CREATE TABLE game_publisher(vg_id primary key, publisher_name varchar(30))
+mr.lidou-# CREATE TABLE game_development(vg_id int primary key, developer varchar(30), publisher varchar(30), releaseDate date);
+
+mr.lidou-# CREATE TABLE game_publisher(vg_id int primary key, developer varchar(30), publisher varchar(30), releaseDate date);
+ERROR:  syntax error at or near "E"
+LINE 1: E 
+        ^
+mr.lidou=# CREATE TABLE game_publisher(vg_id int primary key, developer varchar(30), publisher varchar(30), releaseDate date);
+CREATE TABLE
+mr.lidou=# CREATE TABLE game_ratings (vg_id int primary key, user_rating int,critics_rating int);
+CREATE TABLE
+                               ^
+
+-- INSERTING RECORDS INTO THE TABLES 
+mr.lidou=# insert into videogames values(1, 'GTA', 1);
+INSERT 0 1
+
+mr.lidou=# insert into videogames values(2, 'FIFA', 2);
+INSERT 0 1
+mr.lidou=# insert into videogames values(3, 'NBA 2K22', 3);
+INSERT 0 1
+mr.lidou=# insert into videogames values(4, 'God of wars', 4);
+INSERT 0 1
+mr.lidou=# insert into genre values(1, 'violence');
+INSERT 0 1
+mr.lidou=# insert into genre values(2, 'soccer');
+INSERT 0 1
+mr.lidou=# insert into genre values(3, 'basketball');
+INSERT 0 1
+mr.lidou=# insert into genre values(4, 'adventure');
+INSERT 0 1
+mr.lidou=# insert into game_publisher values(1, 'rockstar', 'rockstar', '2020-02-12');
+INSERT 0 1
+mr.lidou=# insert into game_publisher values(2, 'electronic arts', 'FIFA', '2021-10-23');
+INSERT 0 1
+mr.lidou=# insert into game_publisher values(3, '2k games', '2kgames', '2021-11-12');
+INSERT 0 1
+mr.lidou=# insert into game_publisher values (4, 'electronics arts', 'Pro', '2020-12-04');
+INSERT 0 1
+mr.lidou=# insert into game_ratings values (1, 8 , 10);
+INSERT 0 1
+mr.lidou=# insert into game_ratings values (2, 7, 9);
+INSERT 0 1
+mr.lidou=# insert into game_ratings values (3, 9, 9);
+INSERT 0 1
+mr.lidou=# insert into game_ratings values (4, 10, 8);
+INSERT 0 1
+
+-- JOINING VIDEOGAMES AND GENRE TABLES WITH ALL THEIR ATTRIBUTES
+mr.lidou=# SELECT * FROM videogames
+mr.lidou-# INNER JOIN genre ON videogames.vg_id = genre.vg_id;
+ vg_id |   vg_name   | genre_id | vg_id | genre_name 
+-------+-------------+----------+-------+------------
+     1 | GTA         |        1 |     1 | violence
+     2 | FIFA        |        2 |     2 | soccer
+     3 | NBA 2K22    |        3 |     3 | basketball
+     4 | God of wars |        4 |     4 | adventure
+(4 rows)
+
+-- JOINING VIDEOGAMES AND GENRE TABLE BUT ONLY DISPLAY CERTAIN ATTRIBUTES
+mr.lidou=# SELECT vg_name, genre_id, genre_name
+mr.lidou-# FROM videogames
+mr.lidou-# INNER JOIN genre ON videogames.vg_id = genre.vg_id;
+   vg_name   | genre_id | genre_name 
+-------------+----------+------------
+ GTA         |        1 | violence
+ FIFA        |        2 | soccer
+ NBA 2K22    |        3 | basketball
+ God of wars |        4 | adventure
+(4 rows)
+
+-- JOINING VIDEOGAMES, GENRE AND GAME_PUBLISHER TABLE AND ONLY DISPLAYING CERTAIN ATTRIBUTES
+mr.lidou=# SELECT vg_name, genre_id, genre_name, developer, releasedate
+mr.lidou-# FROM videogames
+mr.lidou-# INNER JOIN genre ON videogames.vg_id = genre.vg_id
+mr.lidou-# INNER JOIN game_publisher ON videogames.vg_id = game_publisher.vg_id;
+   vg_name   | genre_id | genre_name |    developer     | releasedate 
+-------------+----------+------------+------------------+-------------
+ GTA         |        1 | violence   | rockstar         | 2020-02-12
+ FIFA        |        2 | soccer     | electronic arts  | 2021-10-23
+ NBA 2K22    |        3 | basketball | 2k games         | 2021-11-12
+ God of wars |        4 | adventure  | electronics arts | 2020-12-04
+(4 rows)
+
+-- JOINING ALL FOR TABLES AND DISPLAYING ONLY CERTAIN ATTRIBUTES.
+
+mr.lidou=# SELECT vg_name, genre_id, genre_name, developer, releasedate, user_rating, critics_rating
+mr.lidou-# FROM videogames
+mr.lidou-# INNER JOIN genre ON videogames.vg_id = genre.vg_id
+mr.lidou-# INNER JOIN game_publisher ON videogames.vg_id = game_publisher.vg_id
+mr.lidou-# INNER JOIN game_ratings ON videogames.vg_id = game_ratings.vg_id;
+   vg_name   | genre_id | genre_name |    developer     | releasedate | user_rating | critics_rating 
+-------------+----------+------------+------------------+-------------+-------------+----------------
+ GTA         |        1 | violence   | rockstar         | 2020-02-12  |           8 |             10
+ FIFA        |        2 | soccer     | electronic arts  | 2021-10-23  |           7 |              9
+ NBA 2K22    |        3 | basketball | 2k games         | 2021-11-12  |           9 |              9
+ God of wars |        4 | adventure  | electronics arts | 2020-12-04  |          10 |              8
+(4 rows)
+
+(END)
